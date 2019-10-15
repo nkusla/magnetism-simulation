@@ -1,4 +1,4 @@
-import pygame as pg
+import pygame
 
 drag = False
 
@@ -6,14 +6,14 @@ drag = False
 wind_width = 1000
 wind_height = 800
 
-simWindow = pg.display.set_mode((wind_width, wind_height))
-pg.display.set_caption('Simulation')
+simWindow = pygame.display.set_mode((wind_width, wind_height))
+pygame.display.set_caption('Simulation')
 
 # Color variables
 background = (102, 102, 102)
 
 # Sprites
-sp_magnet = pg.image.load('resources/magnet.png')
+sp_magnet = pygame.image.load('resources/magnet.png')
 
 # Clock variables
-clock = pg.time.Clock()
+clock = pygame.time.Clock()

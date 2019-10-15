@@ -1,20 +1,22 @@
 import modules.variables as v
 import modules.functions as f
-import pygame as pg
+import pygame
 
-magnet = f.Object('magnet', v.sp_magnet, v.sp_magnet.get_rect().size, 375, 375)
+magnet = f.Object('magnet', v.sp_magnet, 375, 375)
 
 while True:
     v.simWindow.fill(v.background)
     f.draw_object(magnet)
 
-    for event in pg.event.get():
-        if (event.type == pg.MOUSEBUTTONDOWN and f.obj_clicked(magnet, event.pos)) or v.drag:
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN and f.obj_clicked(magnet, event.pos):
             v.drag = True
-            if event.type == pg.MOUSEMOTION:
-                f.move_obj(magnet, event.pos)
-            if event.type == pg.MOUSEBUTTONUP:
-                v.drag = False
+        elif event.type == pygame.MOUSEMOTION and v.drag:
+            f.move_obj(magnet, event.pos)
+        elif event.type == pygame.MOUSEBUTTONUP:
+            v.drag = False
+        elif event.type == pygame.QUIT:
+            exit()
     
-    pg.display.update()
+    pygame.display.update()
     v.clock.tick(60)
