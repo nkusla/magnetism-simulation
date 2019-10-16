@@ -2,19 +2,21 @@ import modules.variables as v
 import modules.functions as f
 import pygame
 
-magnet = f.Object('magnet', v.sp_magnet, 375, 375)
+magnet = f.Magnet('magnet', v.sp_magnet, 375, 375)
+#coil = f.Object('coil', v.sp_coil, 200, 200)
 
 while True:
     v.simWindow.fill(v.background)
-    f.draw_object(magnet)
+    #coil.draw()
+    magnet.draw()
 
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN and f.obj_clicked(magnet, event.pos):
-            v.drag = True
-        elif event.type == pygame.MOUSEMOTION and v.drag:
-            f.move_obj(magnet, event.pos)
+        if event.type == pygame.MOUSEBUTTONDOWN and magnet.is_collided_with_mouse(event.pos):
+            magnet.drag = True
+        elif event.type == pygame.MOUSEMOTION and magnet.drag:
+            magnet.move(event.pos)
         elif event.type == pygame.MOUSEBUTTONUP:
-            v.drag = False
+            magnet.drag = False
         elif event.type == pygame.QUIT:
             exit()
     

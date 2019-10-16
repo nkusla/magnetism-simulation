@@ -5,23 +5,28 @@ else:
     import variables as v
 
 class Object:
-    def __init__(self, name, sprite, x, y):
+    def __init__(self, name, sprite, x, y, drag = False):
         self.name = name
         self.sprite = sprite
 
         sprite_size = sprite.get_rect().size
         self.rect = pygame.Rect(x, y, sprite_size[0], sprite_size[1])
+        self.drag = drag
         
-def draw_object(obj):
-    v.simWindow.blit(obj.sprite, (obj.rect.x, obj.rect.y))
+    def draw(self):
+        v.simWindow.blit(self.sprite, (self.rect.x, self.rect.y))
 
-def obj_clicked(obj, mouse_pos):
-    if obj.rect.collidepoint(mouse_pos):
-        return True
-    else:
-        return False
+    def is_collided_with_mouse(self, mouse_pos):
+        if self.rect.collidepoint(mouse_pos):
+            return True
+        else:
+            return False
 
-def move_obj(obj, pos):
-    obj.rect.centerx =+ pos[0]
-    obj.rect.centery =+ pos[1]
-    return obj
+    def move(self, pos):
+        self.rect.centerx = pos[0]
+        self.rect.centery = pos[1]
+
+class Magnet(Object):
+    def __init__(self, name, sprite, x, y):
+        Object.__init__(self, name, sprite, x, y)
+        magnetic_field = []
