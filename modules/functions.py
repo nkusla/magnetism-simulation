@@ -30,3 +30,30 @@ class Magnet(Object):
     def __init__(self, name, sprite, x, y):
         Object.__init__(self, name, sprite, x, y)
         magnetic_field = []
+
+    def draw_magnetic_field(self):
+        rect = pygame.Rect(400, 420, 330, 60)
+        rect.midbottom = self.rect.center
+        x = rect.x
+        y = rect.y
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y, 330, 60), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y - 10, 330, 70), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y - 20, 330, 80), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y - 30, 330, 90), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y - 40, 330, 100), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y - 50, 330, 110), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y - 60, 330, 120), 3)
+        # pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y - 70, 330, 130), 3)
+        # pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y - 80, 330, 140), 3)
+        # pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y - 90, 330, 150), 3)
+
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 60), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 70), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 80), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 90), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 100), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 110), 3)
+        pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 120), 3)
+        # pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 130), 3)
+        # pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 140), 3)
+        # pygame.draw.ellipse(v.simWindow, v.magnetic_field_color, pygame.Rect(x, y + 60, 330, 150), 3)
