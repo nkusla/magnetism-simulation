@@ -27,31 +27,40 @@ class Object:
         self.rect.centery = pos[1]
 
 class Magnet(Object):
-    def __init__(self, name, sprite, x, y, B = 3):
+    def __init__(self, name, sprite, x, y, B = 5, field_visible = False):
         Object.__init__(self, name, sprite, x, y)
         self.B = B
+        self.field_visible = field_visible
         
     def draw_magnetic_field(self):
-        ellipse_width = 60
-        ellipse_height = 330
-        rect = pygame.Rect(0, 0, ellipse_height, ellipse_width)
+        ellipse_width = 330
+        ellipse_height = 60
+        rect = pygame.Rect(0, 0, ellipse_width, ellipse_height)
         rect.midbottom = self.rect.center
         x = rect.x
         y = rect.y
 
         j = 0
-        for i in range(0, self.B):
+        for _ in range(0, self.B):
             pygame.draw.ellipse(
                 v.simWindow, 
                 v.magnetic_field_color,
-                pygame.Rect(x, y-j, ellipse_height, ellipse_width+j), 3)
+                pygame.Rect(x, y-j, ellipse_width, ellipse_height+j), 3)
             j += 10
 
         j = 0
-        for i in range(0, self.B):
+        for _ in range(0, self.B):
             pygame.draw.ellipse(
                 v.simWindow, 
                 v.magnetic_field_color, 
-                pygame.Rect(x, y+ellipse_width, ellipse_height, ellipse_width+j), 3)
+                pygame.Rect(x, y+ellipse_height, ellipse_width, ellipse_height+j), 3)
             j += 10
+
+    def show_magnetic_field(self, event):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
+            if self.field_visible:
+                self.field_visible = False
+            elif not self.field_visible:
+                self.field_visible = True
+        
 

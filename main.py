@@ -8,8 +8,8 @@ magnet = f.Magnet('magnet', v.sp_magnet, 375, 375)
 while True:
     v.simWindow.fill(v.background)
     #coil.draw()
-    magnet.B = 10
-    magnet.draw_magnetic_field()
+    if magnet.field_visible:
+        magnet.draw_magnetic_field()
     magnet.draw()
 
     for event in pygame.event.get():
@@ -21,6 +21,8 @@ while True:
             magnet.drag = False
         elif event.type == pygame.QUIT:
             exit()
-    
+
+        magnet.show_magnetic_field(event)
+        
     pygame.display.update()
     v.clock.tick(60)
