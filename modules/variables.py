@@ -15,10 +15,12 @@ coil_color = (184, 115, 51)
 # Other variables
 field_width = 330
 field_height = 60
+field_lines_thickness = 2
 
 coil_width = 50
-coil_height = 150
-coil_spacing = 20
+coil_height = 120
+coil_spacing = 16
+coil_thickness = 5
 
 # Sprites
 sp_magnet = pygame.image.load('resources/magnet.png')

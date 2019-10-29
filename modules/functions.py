@@ -1,4 +1,5 @@
 import pygame
+from math import pi
 if __name__ != '__main__':
     import modules.variables as v
 else:
@@ -52,7 +53,7 @@ class Magnet(Object):
                 pygame.draw.ellipse(
                     v.simWindow, 
                     v.magnetic_field_color,
-                    pygame.Rect(x, y-j, ellipse_width, ellipse_height+j), 3)
+                    pygame.Rect(x, y-j, ellipse_width, ellipse_height+j), v.field_lines_thickness)
                 j += 10
 
             j = 0
@@ -60,7 +61,7 @@ class Magnet(Object):
                 pygame.draw.ellipse(
                     v.simWindow, 
                     v.magnetic_field_color, 
-                    pygame.Rect(x, y+ellipse_height, ellipse_width, ellipse_height+j), 3)
+                    pygame.Rect(x, y+ellipse_height, ellipse_width, ellipse_height+j), v.field_lines_thickness)
                 j += 10
 
     def show_magnetic_field(self, event):
@@ -76,10 +77,26 @@ class Coil(Object):
         self.coil_color = v.coil_color
         self.num_coils = num_coils
         self.coils_list = []
-    
-    def draw(self):
+        self.save_coils_rect()
+
+    def save_coils_rect(self):
         for _ in range(self.num_coils):
-            pygame.draw.ellipse(v.simWindow, v.coil_color, self.rect, 5)
-            self.coils_list.append(self.rect)
+            coil_rect = pygame.Rect(self.rect.x, self.rect.y, self.rect.width, self.rect.height)
+            self.coils_list.append(coil_rect)
             self.rect.x += v.coil_spacing
+        
         self.rect.x -= self.num_coils * v.coil_spacing
+
+    def draw_first_half(self):
+        for i in range(self.num_coils):
+            pygame.draw.arc(v.simWindow, v.coil_color, 
+                self.coils_list[i], 
+                pi/2, 3/2*pi,
+                v.coil_thickness)
+
+    def draw_second_half(self):
+        for i in range(self.num_coils):
+            pygame.draw.arc(v.simWindow, v.coil_color, 
+                self.coils_list[i], 
+                3/2*pi, pi/2,
+                v.coil_thickness)

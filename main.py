@@ -3,13 +3,14 @@ import modules.functions as f
 import pygame
 
 magnet = f.Magnet('magnet', 375, 375, v.sp_magnet)
-coil = f.Coil('coil', 200, 200, 2)
+coil = f.Coil('coil', 200, 200, 30)
 
 while True:
     v.simWindow.fill(v.background)
-    coil.draw()
+    coil.draw_first_half()
     magnet.draw_magnetic_field()
     magnet.draw()
+    coil.draw_second_half()
 
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN and magnet.is_collided_with_mouse(event.pos):
