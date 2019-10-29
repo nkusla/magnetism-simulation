@@ -10,10 +10,19 @@ pygame.display.set_caption('Simulation')
 # Color variables
 background = (102, 102, 102)
 magnetic_field_color = (97, 189, 194)
+coil_color = (184, 115, 51)
+
+# Other variables
+field_width = 330
+field_height = 60
+
+coil_width = 50
+coil_height = 150
+coil_spacing = 20
 
 # Sprites
 sp_magnet = pygame.image.load('resources/magnet.png')
 sp_coil = pygame.image.load('resources/coil.png')
 
-# Clock variables
+# Clock variable
 clock = pygame.time.Clock()

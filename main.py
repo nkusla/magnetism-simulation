@@ -2,14 +2,13 @@ import modules.variables as v
 import modules.functions as f
 import pygame
 
-magnet = f.Magnet('magnet', v.sp_magnet, 375, 375)
-#coil = f.Object('coil', v.sp_coil, 200, 200)
+magnet = f.Magnet('magnet', 375, 375, v.sp_magnet)
+coil = f.Coil('coil', 200, 200, 2)
 
 while True:
     v.simWindow.fill(v.background)
-    #coil.draw()
-    if magnet.field_visible:
-        magnet.draw_magnetic_field()
+    coil.draw()
+    magnet.draw_magnetic_field()
     magnet.draw()
 
     for event in pygame.event.get():
