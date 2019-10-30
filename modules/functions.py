@@ -82,25 +82,23 @@ class Magnet(Object):
         if not coil_rect.colliderect(self.rect):
             self.inside_coil = False
         
-    def move(self, coil_rect, pos):
+    def relative_move(self, coil_rect, pos):
         self.check_inside_coil(coil_rect)
 
         if not self.inside_coil:
             case_1 = (pos[1] - self.rect.height/2) < (coil_rect.y + coil_rect.height)
             case_2 = (pos[1] + self.rect.height/2) > coil_rect.y
-            case_3 = self.rect.x > coil_rect.right
-            case_4 = self.rect.x < coil_rect.left
+            case_3 = self.rect.left > coil_rect.right
+            case_4 = self.rect.right < coil_rect.left
             if (not case_1 or not case_2) or (case_3 or case_4):
-                self.rect.centerx = pos[0]
-                self.rect.centery = pos[1]
+                self.move(pos)
             else:
                 self.drag = False
         else:
-            case_1 = (pos[1] + self.rect.height/2) < (coil_rect.y + coil_rect.height)
-            case_2 = (pos[1] - self.rect.height/2) > coil_rect.y
+            case_1 = (pos[1] + self.rect.height/2) < coil_rect.bottom - 3
+            case_2 = (pos[1] - self.rect.height/2) > coil_rect.top + 3
             if case_1 and case_2:
-                self.rect.centerx = pos[0]
-                self.rect.centery = pos[1]
+                self.move(pos)
             else:
                 self.drag = False
 
@@ -146,9 +144,11 @@ class Coil(Object):
     def change_coil_features(self, event):        
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                self.rect.height -= 5
+                if self.rect.height >= v.coil_min_height:
+                    self.rect.height -= 5
             elif event.key == pygame.K_DOWN:
-                self.rect.height += 5
+                if self.rect.height <= v.coil_max_height:
+                    self.rect.height += 5
 
         self.save_coils_rect()
         self.get_rectunion()

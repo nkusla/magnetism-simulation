@@ -19,6 +19,8 @@ field_lines_thickness = 2
 
 coil_width = 50
 coil_height = 120
+coil_min_height = 95
+coil_max_height = 200
 coil_spacing = 16
 coil_thickness = 5
 
