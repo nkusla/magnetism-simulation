@@ -33,11 +33,13 @@ class Object:
         self.rect.centerx = pos[0]
         self.rect.centery = pos[1]
 
+
 class Magnet(Object):
     def __init__(self, name, x, y, sprite, B = 5, field_visible = False):
         super().__init__(name, x, y, sprite = sprite)
         self.B = B
         self.field_visible = field_visible
+        self.inside_coil = False
         
     def draw_magnetic_field(self):
         if self.field_visible:
@@ -70,7 +72,39 @@ class Magnet(Object):
                 self.field_visible = False
             elif not self.field_visible:
                 self.field_visible = True
+    
+    def check_inside_coil(self, coil_rect):
+        case_1 = coil_rect.collidepoint(self.rect.topleft) and coil_rect.collidepoint(self.rect.bottomleft)
+        case_2 = coil_rect.collidepoint(self.rect.topright) and coil_rect.collidepoint(self.rect.bottomright)
+        if case_1 or case_2:
+            self.inside_coil = True
+
+        if not coil_rect.colliderect(self.rect):
+            self.inside_coil = False
         
+    def move(self, coil_rect, pos):
+        self.check_inside_coil(coil_rect)
+
+        if not self.inside_coil:
+            case_1 = (pos[1] - self.rect.height/2) < (coil_rect.y + coil_rect.height)
+            case_2 = (pos[1] + self.rect.height/2) > coil_rect.y
+            case_3 = self.rect.x > coil_rect.right
+            case_4 = self.rect.x < coil_rect.left
+            if (not case_1 or not case_2) or (case_3 or case_4):
+                self.rect.centerx = pos[0]
+                self.rect.centery = pos[1]
+            else:
+                self.drag = False
+        else:
+            case_1 = (pos[1] + self.rect.height/2) < (coil_rect.y + coil_rect.height)
+            case_2 = (pos[1] - self.rect.height/2) > coil_rect.y
+            if case_1 and case_2:
+                self.rect.centerx = pos[0]
+                self.rect.centery = pos[1]
+            else:
+                self.drag = False
+
+
 class Coil(Object):
     def __init__(self, name, x, y, num_coils = 10):
         super().__init__(name, x, y, size = [v.coil_width, v.coil_height])
@@ -78,14 +112,22 @@ class Coil(Object):
         self.num_coils = num_coils
         self.coils_list = []
         self.save_coils_rect()
+        self.rectunion = None
+        self.get_rectunion()
 
     def save_coils_rect(self):
+        self.coils_list = []
         for _ in range(self.num_coils):
             coil_rect = pygame.Rect(self.rect.x, self.rect.y, self.rect.width, self.rect.height)
             self.coils_list.append(coil_rect)
             self.rect.x += v.coil_spacing
         
         self.rect.x -= self.num_coils * v.coil_spacing
+    
+    def get_rectunion(self):
+        rectunion_width = self.coils_list[-1].topright[0] - self.rect.x
+        rectunion = pygame.Rect(self.rect.x, self.rect.y, rectunion_width, self.rect.height)
+        self.rectunion = rectunion
 
     def draw_first_half(self):
         for i in range(self.num_coils):
@@ -100,3 +142,13 @@ class Coil(Object):
                 self.coils_list[i], 
                 3/2*pi, pi/2,
                 v.coil_thickness)
+
+    def change_coil_features(self, event):        
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                self.rect.height -= 5
+            elif event.key == pygame.K_DOWN:
+                self.rect.height += 5
+
+        self.save_coils_rect()
+        self.get_rectunion()
