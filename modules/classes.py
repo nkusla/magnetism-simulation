@@ -33,7 +33,6 @@ class Object:
         self.rect.centerx = pos[0]
         self.rect.centery = pos[1]
 
-
 class Magnet(Object):
     def __init__(self, name, x, y, sprite, B = 5, field_visible = False):
         super().__init__(name, x, y, sprite = sprite)
@@ -86,22 +85,26 @@ class Magnet(Object):
         self.check_inside_coil(coil_rect)
 
         if not self.inside_coil:
-            case_1 = (pos[1] - self.rect.height/2) < (coil_rect.y + coil_rect.height)
-            case_2 = (pos[1] + self.rect.height/2) > coil_rect.y
+            case_1 = (pos[1] - self.rect.height/2) >= coil_rect.bottom
+            case_2 = (pos[1] + self.rect.height/2) <= coil_rect.top
             case_3 = self.rect.left > coil_rect.right
             case_4 = self.rect.right < coil_rect.left
-            if (not case_1 or not case_2) or (case_3 or case_4):
+            if (case_1 or case_2) or (case_3 or case_4):
                 self.move(pos)
             else:
-                self.drag = False
+                pom_x = self.rect.centerx
+                pom_y = self.rect.centery
+                self.move(pos)
+                if coil_rect.colliderect(self.rect):
+                    self.move((pom_x, pom_y))
+                    self.drag = False
         else:
-            case_1 = (pos[1] + self.rect.height/2) < coil_rect.bottom - 3
-            case_2 = (pos[1] - self.rect.height/2) > coil_rect.top + 3
+            case_1 = (pos[1] + self.rect.height/2) <= coil_rect.bottom - 3
+            case_2 = (pos[1] - self.rect.height/2) >= coil_rect.top + 3
             if case_1 and case_2:
                 self.move(pos)
             else:
                 self.drag = False
-
 
 class Coil(Object):
     def __init__(self, name, x, y, num_coils = 10):

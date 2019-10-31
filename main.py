@@ -1,9 +1,9 @@
 import modules.variables as v
-import modules.functions as f
+import modules.classes as c
 import pygame
 
-magnet = f.Magnet('magnet', 375, 375, v.sp_magnet)
-coil = f.Coil('coil', 200, 200, 30)
+magnet = c.Magnet('magnet', 375, 375, v.sp_magnet)
+coil = c.Coil('coil', 200, 200, 30)
 
 while True:
     v.simWindow.fill(v.background)
