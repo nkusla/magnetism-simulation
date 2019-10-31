@@ -33,6 +33,7 @@ class Object:
         self.rect.centerx = pos[0]
         self.rect.centery = pos[1]
 
+
 class Magnet(Object):
     def __init__(self, name, x, y, sprite, B = 5, field_visible = False):
         super().__init__(name, x, y, sprite = sprite)
@@ -106,6 +107,16 @@ class Magnet(Object):
             else:
                 self.drag = False
 
+    def change_magnet_features(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                if self.B > v.induction_min:
+                    self.B -= 1 
+            elif event.key == pygame.K_w:
+                if self.B < v.induction_max:
+                    self.B += 1
+
+
 class Coil(Object):
     def __init__(self, name, x, y, num_coils = 10):
         super().__init__(name, x, y, size = [v.coil_width, v.coil_height])
@@ -152,6 +163,13 @@ class Coil(Object):
             elif event.key == pygame.K_DOWN:
                 if self.rect.height <= v.coil_max_height:
                     self.rect.height += 5
+            elif event.key == pygame.K_LEFT:
+                if self.num_coils > v.coil_min_num:
+                    self.num_coils -= 1
+            elif event.key == pygame.K_RIGHT:
+                if self.num_coils < v.coil_max_num:
+                    self.num_coils += 1
 
         self.save_coils_rect()
         self.get_rectunion()
+    

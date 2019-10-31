@@ -1,11 +1,18 @@
 import pygame
 
+pygame.init()
+
+# Sprites
+sp_magnet = pygame.image.load('resources/magnet.png')
+icon = pygame.image.load('resources/icon.png')
+
 # Window variables
 wind_width = 1200
 wind_height = 800
 
 simWindow = pygame.display.set_mode((wind_width, wind_height))
-pygame.display.set_caption('Simulation')
+pygame.display.set_caption('Electromagnetism')
+pygame.display.set_icon(icon)
 
 # Color variables
 background = (102, 102, 102)
@@ -16,6 +23,8 @@ coil_color = (184, 115, 51)
 field_width = 330
 field_height = 60
 field_lines_thickness = 2
+induction_min = 1
+induction_max = 10
 
 coil_width = 50
 coil_height = 120
@@ -23,10 +32,17 @@ coil_min_height = 95
 coil_max_height = 200
 coil_spacing = 16
 coil_thickness = 5
-
-# Sprites
-sp_magnet = pygame.image.load('resources/magnet.png')
-sp_coil = pygame.image.load('resources/coil.png')
+coil_min_num = 3
+coil_max_num = 35
 
 # Clock variable
 clock = pygame.time.Clock()
+
+# Text (author credits)
+def write_author_name(simWindow):
+    font = pygame.font.Font('freesansbold.ttf', 16)
+    author_text = font.render('Made by: Kusla75', True, (0, 0, 0))
+    author_text_rect = author_text.get_rect()
+    author_text_rect.center = (wind_width * 0.9, wind_height * 0.95)
+
+    simWindow.blit(author_text, author_text_rect)
