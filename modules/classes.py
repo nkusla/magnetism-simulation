@@ -155,6 +155,23 @@ class Coil(Object):
                 3/2*pi, pi/2,
                 v.coil_thickness)
 
+    def draw_lightbulb(self):
+        start_pos = self.rectunion.midleft
+        end_pos = [self.rectunion.left, self.rectunion.y - v.coil_line_lenght]
+        pygame.draw.line(v.simWindow, v.coil_color, start_pos, end_pos, v.coil_thickness-2)
+
+        start_pos = self.rectunion.midright
+        end_pos[0] = self.rectunion.right
+        pygame.draw.line(v.simWindow, v.coil_color, start_pos, end_pos, v.coil_thickness-2)
+
+        start_pos = [self.rectunion.left, self.rectunion.y - v.coil_line_lenght]
+        pygame.draw.line(v.simWindow, v.coil_color, start_pos, end_pos, v.coil_thickness-2)
+
+        circle_center = [self.rectunion.centerx, self.rectunion.y - v.coil_line_lenght]
+        pygame.draw.circle(v.simWindow, v.lightbulb_color, circle_center, v.lightbulb_radius)
+
+        pygame.draw.circle(v.simWindow, (79, 88, 89), circle_center, v.lightbulb_radius, 4)
+
     def change_coil_features(self, event):        
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:

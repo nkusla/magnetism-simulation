@@ -7,6 +7,7 @@ coil = c.Coil('coil', 300, 280, 20)
 
 while True:
     v.simWindow.fill(v.background)
+    coil.draw_lightbulb()
     coil.draw_first_half()
     magnet.draw_magnetic_field()
     magnet.draw()

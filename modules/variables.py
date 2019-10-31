@@ -18,6 +18,7 @@ pygame.display.set_icon(icon)
 background = (102, 102, 102)
 magnetic_field_color = (97, 189, 194)
 coil_color = (184, 115, 51)
+lightbulb_color = (175, 175, 0)
 
 # Other variables
 field_width = 330
@@ -34,6 +35,9 @@ coil_spacing = 16
 coil_thickness = 5
 coil_min_num = 3
 coil_max_num = 35
+coil_line_lenght = 110
+
+lightbulb_radius = 25
 
 # Clock variable
 clock = pygame.time.Clock()
