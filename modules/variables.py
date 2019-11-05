@@ -15,10 +15,10 @@ pygame.display.set_caption('Electromagnetism')
 pygame.display.set_icon(icon)
 
 # Color variables
-background = (102, 102, 102)
+background = (0, 0, 0)
 magnetic_field_color = (97, 189, 194)
 coil_color = (184, 115, 51)
-lightbulb_color = (175, 175, 0)
+lightbulb_color = (35, 35, 0)
 
 # Other variables
 field_width = 330
@@ -45,7 +45,7 @@ clock = pygame.time.Clock()
 # Text (author credits)
 def write_author_name(simWindow):
     font = pygame.font.Font('freesansbold.ttf', 16)
-    author_text = font.render('Made by: Kusla75', True, (0, 0, 0))
+    author_text = font.render('Made by: Kusla75', True, (255, 255, 255))
     author_text_rect = author_text.get_rect()
     author_text_rect.center = (wind_width * 0.9, wind_height * 0.95)
 

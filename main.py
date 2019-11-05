@@ -25,8 +25,8 @@ while True:
 
         magnet.show_magnetic_field(event)
         magnet.change_magnet_features(event)
-        coil.change_coil_features(event)
-        
+        coil.change_coil_features(magnet, event)
+    
     v.write_author_name(v.simWindow)
     pygame.display.update()
     v.clock.tick(60)

@@ -170,23 +170,37 @@ class Coil(Object):
         circle_center = [self.rectunion.centerx, self.rectunion.y - v.coil_line_lenght]
         pygame.draw.circle(v.simWindow, v.lightbulb_color, circle_center, v.lightbulb_radius)
 
-        pygame.draw.circle(v.simWindow, (79, 88, 89), circle_center, v.lightbulb_radius, 4)
+        pygame.draw.circle(v.simWindow, (93, 103, 105), circle_center, v.lightbulb_radius + 9, 4)
 
-    def change_coil_features(self, event):        
+    def update_coil(self):
+        self.save_coils_rect()
+        self.get_rectunion()
+
+    def change_coil_features(self, magnet, event):        
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 if self.rect.height >= v.coil_min_height:
                     self.rect.height -= 5
+                    self.update_coil()
+                    if self.rectunion.colliderect(magnet.rect):
+                        if self.rectunion.bottom < magnet.rect.bottom:
+                            self.rect.height += 5
             elif event.key == pygame.K_DOWN:
                 if self.rect.height <= v.coil_max_height:
                     self.rect.height += 5
+                    self.update_coil()
+                    if self.rectunion.colliderect(magnet.rect):
+                        self.rect.height -= 5
             elif event.key == pygame.K_LEFT:
                 if self.num_coils > v.coil_min_num:
                     self.num_coils -= 1
+
             elif event.key == pygame.K_RIGHT:
                 if self.num_coils < v.coil_max_num:
                     self.num_coils += 1
+                    self.update_coil()
+                    if self.rectunion.colliderect(magnet.rect):
+                        self.num_coils -= 1
 
-        self.save_coils_rect()
-        self.get_rectunion()
+        self.update_coil()
     
