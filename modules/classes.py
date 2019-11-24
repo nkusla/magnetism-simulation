@@ -40,9 +40,13 @@ class Magnet(Object):
         self.B = B
         self.field_visible = field_visible
         self.inside_coil = False
-        
-    def draw_magnetic_field(self):
-        if self.field_visible:
+        self.magnetic_lines_list = []
+        self.save_magnetic_lines_rect()
+        self.rectunion = None
+        self.get_rectunion()
+
+    def save_magnetic_lines_rect(self):
+            self.magnetic_lines_list = []
             ellipse_width = v.field_width
             ellipse_height = v.field_height
             rect = pygame.Rect(0, 0, ellipse_width, ellipse_height)
@@ -52,19 +56,48 @@ class Magnet(Object):
 
             j = 0
             for _ in range(0, self.B):
-                pygame.draw.ellipse(
-                    v.simWindow, 
-                    v.magnetic_field_color,
-                    pygame.Rect(x, y-j, ellipse_width, ellipse_height+j), v.field_lines_thickness)
+                rect = pygame.Rect(x, y-j, ellipse_width, ellipse_height+j)
+                self.magnetic_lines_list.append(rect)
                 j += 10
 
             j = 0
             for _ in range(0, self.B):
+                rect = pygame.Rect(x, y+ellipse_height, ellipse_width, ellipse_height+j)
+                self.magnetic_lines_list.append(rect)
+                j += 10
+
+    def get_rectunion(self):
+        lenght = len(self.magnetic_lines_list)-1
+        mid = lenght // 2
+        x = self.magnetic_lines_list[mid].topleft[0]
+        y = self.magnetic_lines_list[mid].topleft[1]
+        rectunion_height = self.magnetic_lines_list[-1].bottomleft[1] - y
+        rectunion = pygame.Rect(x, y, v.field_width, rectunion_height)
+        self.rectunion = rectunion
+
+    def update_magnet(self):
+        self.save_magnetic_lines_rect()
+        self.get_rectunion()
+        
+    def draw_magnetic_field(self):
+        if self.field_visible:
+            last_index = len(self.magnetic_lines_list)-1
+            mid = last_index // 2
+
+            i = 0
+            while i <= mid:
                 pygame.draw.ellipse(
                     v.simWindow, 
-                    v.magnetic_field_color, 
-                    pygame.Rect(x, y+ellipse_height, ellipse_width, ellipse_height+j), v.field_lines_thickness)
-                j += 10
+                    v.magnetic_field_color,
+                    self.magnetic_lines_list[i], v.field_lines_thickness)
+                i += 1
+
+            while i <= last_index:
+                pygame.draw.ellipse(
+                    v.simWindow, 
+                    v.magnetic_field_color,
+                    self.magnetic_lines_list[i], v.field_lines_thickness)
+                i += 1
 
     def show_magnetic_field(self, event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
@@ -107,15 +140,19 @@ class Magnet(Object):
             else:
                 self.drag = False
 
+        self.update_magnet()
+
     def change_magnet_features(self, event, handler):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
                 if self.B > v.induction_min:
                     self.B -= 1
+                    self.update_magnet()
                     handler.update_parameters('B', 1, '-') 
             elif event.key == pygame.K_w:
                 if self.B < v.induction_max:
                     self.B += 1
+                    self.update_magnet()
                     handler.update_parameters('B', 1, '+')
 
 
@@ -225,12 +262,12 @@ class PhysicsHandler:
     '''
     def __init__(self, magnet, coil):
         self.dic = {}
-        self.B = magnet.B * pow(10, -3)
+        self.B = magnet.B * pow(10, -3) * 2
         self.n = coil.num_coils
         self.d = self.pixels_to_meters(coil.rect.height)
-        self.l = coil.num_coils * self.pixels_to_meters(v.coil_spacing) 
-        self.x = 0.01
+        self.l = coil.num_coils * self.pixels_to_meters(v.coil_spacing)
         self.E = 0
+        self.F = 0
 
         self.update_dict_attributes()
 
@@ -266,7 +303,7 @@ class PhysicsHandler:
         self.dic['Diameter of coil'] = round(d, 2)
         self.dic['Lenght of coil'] = round(l, 2)
         self.dic['Magnetic induction'] = round(B, 2)
-        self.dic['Electromotive force'] = round(self.E, 2)
+        self.dic['Electromotive force'] = self.E
 
     def pixels_to_meters(self, value):
         return (value / 12) * pow(10, -2)
@@ -274,9 +311,9 @@ class PhysicsHandler:
     def update_parameters(self, key, value, operation):
         if key == 'B':
             if operation == '+':
-                self.B += value * pow(10, -3)
+                self.B += value * pow(10, -3) * 2
             else:
-                self.B -= value * pow(10, -3)
+                self.B -= value * pow(10, -3) * 2
         elif key == 'n':
             if operation == '+':
                 self.n += value
@@ -295,6 +332,12 @@ class PhysicsHandler:
             pass
 
         self.update_dict_attributes()
+
+    def calculate_flux(self, magnet, coil):
+        pass
+
+    def calculate_electromotive_force(self, magnet, coil, start_time, end_time):
+        pass
         
 
 
