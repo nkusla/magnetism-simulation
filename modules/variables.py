@@ -18,7 +18,8 @@ pygame.display.set_icon(icon)
 background = (0, 0, 0)
 magnetic_field_color = (97, 189, 194)
 coil_color = (184, 115, 51)
-lightbulb_color = (35, 35, 0)
+# Lightbulb color will change during simulation
+lightbulb_color = [35, 35, 0]
 
 # Other variables
 field_width = 330

@@ -4,6 +4,7 @@ import pygame
 
 magnet = c.Magnet('magnet', 450, 500, v.sp_magnet)
 coil = c.Coil('coil', 300, 280, 20)
+handler = c.PhysicsHandler(magnet, coil)
 
 while True:
     v.simWindow.fill(v.background)
@@ -24,9 +25,10 @@ while True:
             exit()
 
         magnet.show_magnetic_field(event)
-        magnet.change_magnet_features(event)
-        coil.change_coil_features(magnet, event)
-    
+        magnet.change_magnet_features(event, handler)
+        coil.change_coil_features(magnet, event, handler)
+
+    handler.write_parameters()
     v.write_author_name(v.simWindow)
     pygame.display.update()
     v.clock.tick(60)

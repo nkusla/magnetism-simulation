@@ -107,14 +107,16 @@ class Magnet(Object):
             else:
                 self.drag = False
 
-    def change_magnet_features(self, event):
+    def change_magnet_features(self, event, handler):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_s:
                 if self.B > v.induction_min:
-                    self.B -= 1 
+                    self.B -= 1
+                    handler.update_parameters('B', 1, '-') 
             elif event.key == pygame.K_w:
                 if self.B < v.induction_max:
                     self.B += 1
+                    handler.update_parameters('B', 1, '+')
 
 
 class Coil(Object):
@@ -176,31 +178,124 @@ class Coil(Object):
         self.save_coils_rect()
         self.get_rectunion()
 
-    def change_coil_features(self, magnet, event):        
+    def change_coil_features(self, magnet, event, handler):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 if self.rect.height >= v.coil_min_height:
                     self.rect.height -= 5
+                    handler.update_parameters('d', 5, '-')
                     self.update_coil()
                     if self.rectunion.colliderect(magnet.rect):
                         if self.rectunion.bottom < magnet.rect.bottom:
                             self.rect.height += 5
+                            handler.update_parameters('d', 5, '+')
             elif event.key == pygame.K_DOWN:
                 if self.rect.height <= v.coil_max_height:
                     self.rect.height += 5
+                    handler.update_parameters('d', 5, '+')
                     self.update_coil()
                     if self.rectunion.colliderect(magnet.rect):
                         self.rect.height -= 5
+                        handler.update_parameters('d', 5, '-')
             elif event.key == pygame.K_LEFT:
                 if self.num_coils > v.coil_min_num:
                     self.num_coils -= 1
+                    handler.update_parameters('n', 1, '-')
 
             elif event.key == pygame.K_RIGHT:
                 if self.num_coils < v.coil_max_num:
                     self.num_coils += 1
+                    handler.update_parameters('n', 1, '+')
                     self.update_coil()
                     if self.rectunion.colliderect(magnet.rect):
                         self.num_coils -= 1
+                        handler.update_parameters('n', 1, '-')
 
         self.update_coil()
+
+
+class PhysicsHandler:
+    ''' Parameters meaning:
+            B = magnetic induction of bar magnet [T]
+            n = number of coils
+            d = diameter of coil [m]
+            l = lenght of coil [m]
+            x = value that height of coil wil be incremented [m]
+            E = electromotive force [V]
+    '''
+    def __init__(self, magnet, coil):
+        self.dic = {}
+        self.B = magnet.B * pow(10, -3)
+        self.n = coil.num_coils
+        self.d = self.pixels_to_meters(coil.rect.height)
+        self.l = coil.num_coils * self.pixels_to_meters(v.coil_spacing) 
+        self.x = 0.01
+        self.E = 0
+
+        self.update_dict_attributes()
+
+    def write_parameters(self):
+        font = pygame.font.Font('freesansbold.ttf', 16)
+        x = 960
+        y = 30 
+        for name, param in self.dic.items():    
+            text = '{} = {} '.format(name, param)
+            if name == 'Magnetic induction': 
+                text += 'mT'
+            elif name == 'Electromotive force': 
+                text += 'V'
+            elif name == 'Number of coils':
+                pass
+            else: 
+                text += 'cm'
+
+            obj = font.render(text, True, (255, 255, 255))
+            obj_rect = obj.get_rect()
+            obj_rect.topleft = (x, y)
+            y += 25
+
+            v.simWindow.blit(obj, obj_rect)
     
+    def update_dict_attributes(self):
+        # transfers meters to centimeters and 
+        # teslas to militeslas when writing on screen
+        d = self.d * pow(10, 2)
+        l = self.l * pow(10, 2)
+        B = self.B * pow(10, 3)
+        self.dic['Number of coils'] = self.n
+        self.dic['Diameter of coil'] = round(d, 2)
+        self.dic['Lenght of coil'] = round(l, 2)
+        self.dic['Magnetic induction'] = round(B, 2)
+        self.dic['Electromotive force'] = round(self.E, 2)
+
+    def pixels_to_meters(self, value):
+        return (value / 12) * pow(10, -2)
+
+    def update_parameters(self, key, value, operation):
+        if key == 'B':
+            if operation == '+':
+                self.B += value * pow(10, -3)
+            else:
+                self.B -= value * pow(10, -3)
+        elif key == 'n':
+            if operation == '+':
+                self.n += value
+                self.l += value * self.pixels_to_meters(v.coil_spacing)
+            else:
+                self.n -= value
+                self.l -= value * self.pixels_to_meters(v.coil_spacing)
+        elif key == 'd':
+            if operation == '+':
+                self.d += self.pixels_to_meters(value)
+            else:
+                self.d -= self.pixels_to_meters(value)
+        elif key == 'E':
+            self.E = value
+        else:
+            pass
+
+        self.update_dict_attributes()
+        
+
+
+
