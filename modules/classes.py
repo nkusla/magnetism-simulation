@@ -257,7 +257,6 @@ class PhysicsHandler:
             n = number of coils
             d = diameter of coil [m]
             l = lenght of coil [m]
-            x = value that height of coil wil be incremented [m]
             E = electromotive force [V]
     '''
     def __init__(self, magnet, coil):
@@ -266,8 +265,10 @@ class PhysicsHandler:
         self.n = coil.num_coils
         self.d = self.pixels_to_meters(coil.rect.height)
         self.l = coil.num_coils * self.pixels_to_meters(v.coil_spacing)
-        self.E = 0
-        self.F = 0
+        self.E = 0.0
+        self.fluxes = []
+        self.time = []
+        self.start = False
 
         self.update_dict_attributes()
 
@@ -280,7 +281,7 @@ class PhysicsHandler:
             if name == 'Magnetic induction': 
                 text += 'mT'
             elif name == 'Electromotive force': 
-                text += 'V'
+                text += 'mV'
             elif name == 'Number of coils':
                 pass
             else: 
@@ -299,11 +300,12 @@ class PhysicsHandler:
         d = self.d * pow(10, 2)
         l = self.l * pow(10, 2)
         B = self.B * pow(10, 3)
+        E = self.E * pow(10, 3)
         self.dic['Number of coils'] = self.n
         self.dic['Diameter of coil'] = round(d, 2)
         self.dic['Lenght of coil'] = round(l, 2)
         self.dic['Magnetic induction'] = round(B, 2)
-        self.dic['Electromotive force'] = self.E
+        self.dic['Electromotive force'] = round(E, 2)
 
     def pixels_to_meters(self, value):
         return (value / 12) * pow(10, -2)
@@ -334,11 +336,52 @@ class PhysicsHandler:
         self.update_dict_attributes()
 
     def calculate_flux(self, magnet, coil):
-        pass
+        if magnet.rectunion.colliderect(coil.rectunion):
+            collisions = 0
+            for line in magnet.magnetic_lines_list:
+                for area in coil.coils_list:
+                    if area.colliderect(line):
+                        collisions += 1
 
-    def calculate_electromotive_force(self, magnet, coil, start_time, end_time):
-        pass
+            # one magnetic line has value of 1 mT
+            B = pow(10, -3)
+            r = self.d/2
+            S = r*r * pi
+            F = B * S
+            F = collisions * F
+            return F
+
+        else:
+            return 0
         
+    def calculate_electromotive_force(self, start_time, end_time):
+        delta_t = end_time - start_time
+        delta_F = self.fluxes[1] - self.fluxes[0]
+        E = - delta_F / delta_t
+        self.E += abs(E)
 
+        self.update_dict_attributes()
+
+    def relative_move(self, event):
+        if not event.type == pygame.MOUSEBUTTONUP:
+            rel = event.rel
+            is_moved = (rel[0] <= -1 or rel[0] >= 1) and (rel[1] <= -1 or rel[1] >= 1)
+            return is_moved
+        else:
+            return False
+        
+    def monitoring(self, event, magnet, coil, time):
+        if self.relative_move(event):
+            if not self.start:
+                self.start = True
+                self.time.append(time)
+                self.fluxes.append(self.calculate_flux(magnet, coil))
+        elif not self.relative_move(event) and self.start:
+            self.start = False
+            self.time.append(time)
+            self.fluxes.append(self.calculate_flux(magnet, coil))
+            self.calculate_electromotive_force(self.time[0], self.time[1])
+            self.time.clear()
+            self.fluxes.clear()
 
 

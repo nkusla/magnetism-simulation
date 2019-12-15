@@ -19,8 +19,10 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN and magnet.is_collided_with_mouse(event.pos):
             magnet.drag = True
         elif event.type == pygame.MOUSEMOTION and magnet.drag:
+            handler.monitoring(event, magnet, coil, t.time())
             magnet.relative_move(coil.rectunion, event.pos)
         elif event.type == pygame.MOUSEBUTTONUP:
+            handler.monitoring(event, magnet, coil, t.time())
             magnet.drag = False
         elif event.type == pygame.QUIT:
             exit()
@@ -28,7 +30,7 @@ while True:
         magnet.show_magnetic_field(event)
         magnet.change_magnet_features(event, handler)
         coil.change_coil_features(magnet, event, handler)
-
+    
     handler.write_parameters()
     v.write_author_name(v.simWindow)
     pygame.display.update()
