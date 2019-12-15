@@ -4,7 +4,7 @@ import pygame
 import time as t
 
 magnet = c.Magnet('magnet', 450, 500, v.sp_magnet)
-coil = c.Coil('coil', 300, 280, 20)
+coil = c.Coil('coil', 300, 280, 25)
 handler = c.PhysicsHandler(magnet, coil)
 
 while True:
@@ -32,6 +32,8 @@ while True:
         coil.change_coil_features(magnet, event, handler)
     
     handler.write_parameters()
+    handler.change_light_strength()
+    handler.reduce_electromotive_force()
     v.write_author_name(v.simWindow)
     pygame.display.update()
     v.clock.tick(60)

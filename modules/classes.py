@@ -1,5 +1,5 @@
 import pygame
-from math import pi
+from math import pi, exp
 if __name__ != '__main__':
     import modules.variables as v
 else:
@@ -272,6 +272,17 @@ class PhysicsHandler:
 
         self.update_dict_attributes()
 
+    def reduce_electromotive_force(self):
+        delta = 0.35 * pow(10, -3)
+        if self.E >= delta:  
+            self.E -= delta
+        elif self.E <= -delta:
+            self.E += delta
+        else:
+            self.E = 0.0
+
+        self.update_dict_attributes()
+
     def write_parameters(self):
         font = pygame.font.Font('freesansbold.ttf', 16)
         x = 960
@@ -358,7 +369,7 @@ class PhysicsHandler:
         delta_t = end_time - start_time
         delta_F = self.fluxes[1] - self.fluxes[0]
         E = - delta_F / delta_t
-        self.E += abs(E)
+        self.E += E
 
         self.update_dict_attributes()
 
@@ -383,5 +394,14 @@ class PhysicsHandler:
             self.calculate_electromotive_force(self.time[0], self.time[1])
             self.time.clear()
             self.fluxes.clear()
+
+    def sigmoid(self, x):
+        # Modified sigmoid function
+        return 220 / (1 + exp(-x+8)) + 35
+
+    def change_light_strength(self):
+        E = abs(self.E * pow(10, 3))
+        val = round(self.sigmoid(E))
+        v.lightbulb_color = [val, val, 0]
 
 

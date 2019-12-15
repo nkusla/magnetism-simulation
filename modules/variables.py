@@ -1,10 +1,16 @@
 import pygame
+import os
 
 pygame.init()
 
+# Sprite addresses
+(dirname, prom) = os.path.split(os.path.dirname(__file__))
+magnet_address = dirname + '\\resources\\magnet.png'
+icon_address = dirname + '\\resources\\icon.png'
+
 # Sprites
-sp_magnet = pygame.image.load('resources/magnet.png')
-icon = pygame.image.load('resources/icon.png')
+sp_magnet = pygame.image.load(magnet_address)
+icon = pygame.image.load(icon_address)
 
 # Window variables
 wind_width = 1200
@@ -29,7 +35,7 @@ induction_min = 1
 induction_max = 10
 
 coil_width = 50
-coil_height = 120
+coil_height = 145
 coil_min_height = 95
 coil_max_height = 200
 coil_spacing = 16
