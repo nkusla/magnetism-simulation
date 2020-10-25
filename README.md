@@ -5,8 +5,8 @@ Simulation of electromagnetism made for my school, using pygame
 | Key | Desciption |
 |:---:|:----------:|
 | `F` | shows magnetic field |
-| `W` | increases strenght of magnetic field |
-| `S` | decreases strenght of magnetic field |
+| `W` | increases strength of magnetic field |
+| `S` | decreases strength of magnetic field |
 | `↑` | decreases diameter of coil |
 | `↓` | increases diameter of coil |
 | `→` | increases number of coils |
